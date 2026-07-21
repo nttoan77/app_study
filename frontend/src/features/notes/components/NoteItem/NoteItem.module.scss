@@ -298,3 +298,40 @@
         border-radius: 20px;
     }
 }
+
+
+
+/* ==================== REMINDER INFO ==================== */
+
+.reminder-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin: 8px 0;
+    border: 1px solid #fcd34d;
+    font-weight: 500;
+}
+
+.reminder-info::before {
+    content: "⏰";
+    font-size: 15px;
+}
+
+/* Hover effect cho card khi có reminder */
+.note-card:hover .reminder-info {
+    background: #fde68c;
+    border-color: #fbbf24;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .reminder-info {
+        font-size: 12px;
+        padding: 3px 8px;
+    }
+}

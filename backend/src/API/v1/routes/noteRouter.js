@@ -29,6 +29,12 @@ router.get("/", protect, NoteController.getNotes);
 router.post("/", protect, NoteController.createNote);
 
 /**
+ * 
+ * PATCH /api/notes/reminders
+ */
+router.get("/reminders", protect, NoteController.getUpcomingReminders);
+
+/**
  * 📌 CẬP NHẬT GHI CHÚ
  * PUT /api/notes/:id
  */

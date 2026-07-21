@@ -1,10 +1,13 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { Fragment, useContext, Suspense } from 'react';
+import { Fragment, useContext, Suspense, useEffect } from 'react'; // ← Thêm useEffect
 import { AuthContext } from './context/AuthContext';
 import { publicRoutes, privateRoutes } from './routes';
 import DefaultLayout from './layouts/defaultLayout';
 import ProtectedRoute from './protectedRoute';
 import config from './config';
+import ChatButton from './components/chatAI/ChatButton';
+import { NotificationProvider } from '../src/context/NotificationContext';
+import ReminderScheduler from './features/notes/components/ReminderScheduler/ReminderScheduler';
 
 const getLayout = (route) => (route.layout === null ? Fragment : route.layout || DefaultLayout);
 
@@ -65,12 +68,28 @@ function AppRoutes() {
 
 function App() {
     const { loading } = useContext(AuthContext);
+    // ==================== YÊU CẦU QUYỀN THÔNG BÁO ====================
+    useEffect(() => {
+        const requestNotification = async () => {
+            if ('Notification' in window) {
+                if (Notification.permission === 'default') {
+                    await Notification.requestPermission();
+                }
+            }
+        };
+
+        requestNotification();
+    }, []);
 
     if (loading) return <div>Loading...</div>;
 
     return (
         <Suspense fallback={<div>Loading page...</div>}>
-            <AppRoutes />
+            <NotificationProvider>
+                <ReminderScheduler />
+                <AppRoutes />
+                <ChatButton />
+            </NotificationProvider>
         </Suspense>
     );
 }

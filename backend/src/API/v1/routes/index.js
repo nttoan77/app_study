@@ -4,6 +4,7 @@ import adminRoutes from "./adminRouter.js"; // route cho admin
 import CVRouter from "./CVRouter.js"; // router cho cv
 import NoteRouter from "./noteRouter.js";
 import TrackSchedule from "./trackScheduleRouter.js"
+import ChatRouter from './AiChatRouter.js'
 
 const router = express.Router();
 
@@ -13,5 +14,6 @@ router.use("/auth", userRoutes); // /api/auth/...
 router.use("/cv", CVRouter); // /api/cv/..
 router.use("/notes", NoteRouter); // /api/notes/..
 router.use("/TrackSchedules", TrackSchedule); // /api/TrackSchedule/..
+router.use("/chat", ChatRouter); // api/chat/..
 
 export default router;

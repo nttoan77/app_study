@@ -7,6 +7,17 @@ const useNotes = (applicationId = null) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [reminders, setReminders] = useState([]);
+
+    // ==================== FETCH REMINDER ====================
+    const fetchReminders = useCallback(async () => {
+        try {
+            const data = await noteService.getReminders();
+            setReminders(Array.isArray(data) ? data : []);
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
 
     // ==================== FETCH NOTES ====================
     const fetchNotes = useCallback(async () => {
@@ -130,6 +141,8 @@ const useNotes = (applicationId = null) => {
         updateNote,
         deleteNote,
         togglePin,
+        reminders,
+        fetchReminders,
 
         // Helpers
         hasNotes: notes.length > 0,

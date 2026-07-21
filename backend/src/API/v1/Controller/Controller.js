@@ -294,83 +294,164 @@ class UserController {
   }
 
   // ==================== LẤY THÔNG TIN CÁ NHÂN (SAU KHI ĐĂNG NHẬP) ====================
-  static async getProfile(req, res) {
-    // console.log("══════════════════════════════════════");
-    // console.log("GET PROFILE ĐƯỢC GỌI");
-    // console.log("User ID từ token:", req.user.id);
+  // static async getProfile(req, res) {
+  //   // console.log("══════════════════════════════════════");
+  //   // console.log("GET PROFILE ĐƯỢC GỌI");
+  //   // console.log("User ID từ token:", req.user.id);
 
+  //   try {
+  //     const userId = req.user.id;
+
+  //     // console.log("Bắt đầu truy vấn User từ DB...");
+  //     const user = await User.findById(userId)
+  //       .select("-password -resetPasswordOTP -tokenVersion -__v")
+  //       .lean();
+
+  //     if (!user) {
+  //       // console.log("KHÔNG TÌM THẤY USER với ID:", userId);
+  //       return res.status(404).json({
+  //         success: false,
+  //         message: "Không tìm thấy người dùng",
+  //       });
+  //     }
+
+  //     // console.log("TÌM THẤY USER:", {
+  //     //   _id: user._id,
+  //     //   name: user.name,
+  //     //   email: user.email,
+  //     //   isProfileComplete: user.isProfileComplete,
+  //     //   hasAvatar: !!user.avatar,
+  //     //   rawAvatar: user.avatar
+  //     // });
+
+  //     // TẠO AVATAR ĐẸP NHƯ TOPCV
+  //     const getAvatarUrl = () => {
+  //       if (user.avatar && !user.avatar.includes("ui-avatars.com")) {
+  //         const fullUrl = `${process.env.BASE_URL || "http://localhost:8888"}${
+  //           user.avatar
+  //         }`;
+  //         // console.log("Dùng ảnh thật từ server:", fullUrl);
+  //         return fullUrl;
+  //       }
+  //       const name = user.name || "User";
+  //       const uiAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+  //         name
+  //       )}&background=random&bold=true&rounded=true&size=128&font-size=0.5`;
+  //       // console.log("Dùng ảnh mặc định ui-avatars:", uiAvatar);
+  //       return uiAvatar;
+  //     };
+
+  //     const avatarUrl = getAvatarUrl();
+
+  //     // Format ngày sinh
+  //     let formattedBirthDay = null;
+  //     if (user.birthDay) {
+  //       formattedBirthDay = new Date(user.birthDay).toISOString().split("T")[0];
+  //       // console.log("Ngày sinh đã format:", formattedBirthDay);
+  //     } else {
+  //       // console.log("User chưa có ngày sinh");
+  //     }
+
+  //     // Giới tính hiển thị tiếng Việt
+  //     const displayGender = (() => {
+  //       if (!user.gender) {
+  //         // console.log("Giới tính: Chưa cập nhật");
+  //         return "Chưa cập nhật";
+  //       }
+  //       const map = { male: "Nam", female: "Nữ", other: "Khác" };
+  //       const result = map[user.gender] || "Khác";
+  //       // console.log(`Giới tính DB: ${user.gender} → Hiển thị: ${result}`);
+  //       return result;
+  //     })();
+
+  //     // Địa chỉ
+  //     const fullAddress = user.address || "Chưa cập nhật";
+  //     // console.log("Địa chỉ hiển thị:", fullAddress);
+
+  //     // console.log("TRẢ VỀ FRONTEND THÀNH CÔNG!");
+  //     // console.log("══════════════════════════════════════");
+
+  //     return res.json({
+  //       success: true,
+  //       message: "Lấy thông tin cá nhân thành công",
+  //       user: {
+  //         id: user._id,
+  //         userId: user.userId || null,
+  //         name: user.name || "Chưa đặt tên",
+  //         fullName: user.name || "",
+  //         email: user.email,
+  //         phone: user.phone || "Chưa cập nhật",
+  //         avatar: avatarUrl,
+  //         birthDay: formattedBirthDay,
+  //         gender: user.gender || "other", // để backend xử lý logic
+  //         genderDisplay: displayGender, // để frontend hiển thị tiếng Việt
+  //         address: user.address || null,
+  //         addressDisplay: fullAddress,
+  //         isProfileComplete: !!user.isProfileComplete,
+  //         role: user.role || "user",
+  //         createdAt: user.createdAt,
+  //         updatedAt: user.updatedAt,
+  //       },
+  //     });
+  //   } catch (error) {
+  //     console.error("LỖI CHẾT NGƯỜI TRONG getProfile:");
+  //     console.error("Tên lỗi:", error.name);
+  //     console.error("Message:", error.message);
+  //     console.error("Stack:", error.stack);
+  //     // console.log("══════════════════════════════════════");
+
+  //     return res.status(500).json({
+  //       success: false,
+  //       message: "Lỗi server khi lấy thông tin cá nhân",
+  //     });
+  //   }
+  // }
+
+  static async getProfile(req, res) {
     try {
       const userId = req.user.id;
-
-      // console.log("Bắt đầu truy vấn User từ DB...");
+  
       const user = await User.findById(userId)
         .select("-password -resetPasswordOTP -tokenVersion -__v")
         .lean();
-
+  
       if (!user) {
-        // console.log("KHÔNG TÌM THẤY USER với ID:", userId);
         return res.status(404).json({
           success: false,
           message: "Không tìm thấy người dùng",
         });
       }
-
-      // console.log("TÌM THẤY USER:", {
-      //   _id: user._id,
-      //   name: user.name,
-      //   email: user.email,
-      //   isProfileComplete: user.isProfileComplete,
-      //   hasAvatar: !!user.avatar,
-      //   rawAvatar: user.avatar
-      // });
-
-      // TẠO AVATAR ĐẸP NHƯ TOPCV
+  
       const getAvatarUrl = () => {
         if (user.avatar && !user.avatar.includes("ui-avatars.com")) {
           const fullUrl = `${process.env.BASE_URL || "http://localhost:8888"}${
             user.avatar
           }`;
-          // console.log("Dùng ảnh thật từ server:", fullUrl);
           return fullUrl;
         }
         const name = user.name || "User";
-        const uiAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        return `https://ui-avatars.com/api/?name=${encodeURIComponent(
           name
         )}&background=random&bold=true&rounded=true&size=128&font-size=0.5`;
-        // console.log("Dùng ảnh mặc định ui-avatars:", uiAvatar);
-        return uiAvatar;
       };
-
-      const avatarUrl = getAvatarUrl();
-
-      // Format ngày sinh
+  
+      // FIX LỖI CRASH DATE TẠI ĐÂY:
       let formattedBirthDay = null;
       if (user.birthDay) {
-        formattedBirthDay = new Date(user.birthDay).toISOString().split("T")[0];
-        // console.log("Ngày sinh đã format:", formattedBirthDay);
-      } else {
-        // console.log("User chưa có ngày sinh");
-      }
-
-      // Giới tính hiển thị tiếng Việt
-      const displayGender = (() => {
-        if (!user.gender) {
-          // console.log("Giới tính: Chưa cập nhật");
-          return "Chưa cập nhật";
+        const parsedDate = new Date(user.birthDay);
+        if (!isNaN(parsedDate.getTime())) {
+          formattedBirthDay = parsedDate.toISOString().split("T")[0];
         }
+      }
+  
+      const displayGender = (() => {
+        if (!user.gender) return "Chưa cập nhật";
         const map = { male: "Nam", female: "Nữ", other: "Khác" };
-        const result = map[user.gender] || "Khác";
-        // console.log(`Giới tính DB: ${user.gender} → Hiển thị: ${result}`);
-        return result;
+        return map[user.gender] || "Khác";
       })();
-
-      // Địa chỉ
+  
       const fullAddress = user.address || "Chưa cập nhật";
-      // console.log("Địa chỉ hiển thị:", fullAddress);
-
-      // console.log("TRẢ VỀ FRONTEND THÀNH CÔNG!");
-      // console.log("══════════════════════════════════════");
-
+  
       return res.json({
         success: true,
         message: "Lấy thông tin cá nhân thành công",
@@ -381,10 +462,10 @@ class UserController {
           fullName: user.name || "",
           email: user.email,
           phone: user.phone || "Chưa cập nhật",
-          avatar: avatarUrl,
+          avatar: getAvatarUrl(),
           birthDay: formattedBirthDay,
-          gender: user.gender || "other", // để backend xử lý logic
-          genderDisplay: displayGender, // để frontend hiển thị tiếng Việt
+          gender: user.gender || "other",
+          genderDisplay: displayGender,
           address: user.address || null,
           addressDisplay: fullAddress,
           isProfileComplete: !!user.isProfileComplete,
@@ -398,8 +479,7 @@ class UserController {
       console.error("Tên lỗi:", error.name);
       console.error("Message:", error.message);
       console.error("Stack:", error.stack);
-      // console.log("══════════════════════════════════════");
-
+  
       return res.status(500).json({
         success: false,
         message: "Lỗi server khi lấy thông tin cá nhân",
